@@ -3,7 +3,7 @@
   - name: initialize docker swarm
     shell: docker swarm init
   - name: install git
-    yum:
+    dnf:
       name: git
       state: present
   - name: run the visualizer app for docker swarm
