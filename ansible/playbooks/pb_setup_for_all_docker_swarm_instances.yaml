@@ -1,0 +1,38 @@
+- hosts: all
+  tasks:
+  - name: update os
+    dnf:
+      name: "*"
+      state: latest
+  - name: install docker
+    dnf:
+      name: docker
+      state: latest
+  - name: start docker
+    service:
+      name: docker
+      state: started
+      enabled: yes
+  - name: add ec2-user to docker group
+    shell: "usermod -a -G docker ec2-user"
+  - name: install docker compose.
+    get_url:
+      url: https://github.com/docker/compose/releases/download/v2.20.3/docker-compose-linux-x86_64
+      dest: /usr/local/bin/docker-compose
+      mode: 0777
+  - name: uninstall aws cli v1
+    file:
+      path: /bin/aws
+      state: absent
+  - name: download awscliv2 installer
+    unarchive:
+      src: https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip
+      dest: /tmp
+      remote_src: yes
+      creates: /tmp/aws
+      mode: 0755
+  - name: run the installer
+    command:
+    args:
+      cmd: "/tmp/aws/install"
+      creates: /usr/local/bin/aws
