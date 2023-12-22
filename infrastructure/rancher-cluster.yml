@@ -1,0 +1,25 @@
+nodes:
+  - address: 44.192.81.31               #Rancher serveri publick Ip si yazilacak.Burasi privat da olabilir 
+    internal_address: 172.31.77.214       # BUrayada pravit IP si.  hatta olursa daha iyi olur yarim kalirsa proje patlayabilir
+    user: ubuntu
+    role:
+      - controlplane
+      - etcd
+      - worker
+
+# ignore_docker_version: true
+
+services:                   ##snapshot alsin 24 saat bunu tutsun sonra silsin. BU bir service
+  etcd:
+    snapshot: true
+    creation: 6h
+    retention: 24h
+
+ssh_key_path: ~/.ssh/call-rancher.pem         ## Burasi Rancher baglanmak icin kullandigimiz .pem key adresi
+
+# Required for external TLS termination with
+# ingress-nginx v0.22+
+ingress:                                  #Sadece nginx kullaniliyormus. Bunun önunde baska bir 
+  provider: nginx                         ## rod balancer varsa asagidaki true olmasi lazimmis.
+  options:
+    use-forwarded-headers: "true"
